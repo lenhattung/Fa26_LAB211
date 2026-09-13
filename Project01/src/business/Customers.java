@@ -20,21 +20,23 @@ public class Customers extends ArrayList<Customer> implements Workable<Customer>
     private static final String TABLE_HEADER
             = "------------------------------------------------------------------\n"
             + String.format("%-6s| %-25s| %-12s| %s", "Code", "Customer Name", "Phone", "Email")
-            +"\n"
+            + "\n"
             + "------------------------------------------------------------------";
     private static final String TABLE_FOOTER
             = "------------------------------------------------------------------";
 
     // ================== Function 1: Register customers ==================
     /**
-     * Them moi 1 khach hang vao danh sach.
-     * Luu y: viec kiem tra "id da ton tai hay chua" (validate uniqueness)
-     * duoc thuc hien TRUOC khi goi addNew() - thuong o dispatcher layer,
-     * bang cach goi isExist(id) ben duoi. addNew() chi lam dung 1 viec: them.
+     * Them moi 1 khach hang vao danh sach. Luu y: viec kiem tra "id da ton tai
+     * hay chua" (validate uniqueness) duoc thuc hien TRUOC khi goi addNew() -
+     * thuong o dispatcher layer, bang cach goi isExist(id) ben duoi. addNew()
+     * chi lam dung 1 viec: them.
      */
     @Override
     public void addNew(Customer x) {
-        this.add(x);
+        if (!this.isDuplicated(x)) {
+            this.add(x);
+        }
     }
 
     @Override
@@ -50,14 +52,13 @@ public class Customers extends ArrayList<Customer> implements Workable<Customer>
     @Override
     public Customer searchById(String x) {
         for (Customer c : this) {
-            if(c.getId().equalsIgnoreCase(x)){
+            if (c.getId().equalsIgnoreCase(x)) {
                 return c;
             }
         }
         return null;
     }
 
-    
     /**
      * Overload: hien thi mot danh sach con (vd: ket qua sau khi filterByName)
      * Dung chung cho ca Function 3 va Function 8 -> tranh trung lap ma nguon
@@ -75,13 +76,17 @@ public class Customers extends ArrayList<Customer> implements Workable<Customer>
         }
         System.out.println(TABLE_FOOTER);
     }
-    
+
     @Override
     public void showAll() {
         showAll(this);
     }
-    
-    public boolean isExist(String id){
-        return searchById(id)!=null;
+
+    public boolean isExist(String id) {
+        return searchById(id) != null;
+    }
+
+    public boolean isDuplicated(Customer x) {
+        return this.contains(x);
     }
 }

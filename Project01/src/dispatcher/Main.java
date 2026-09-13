@@ -78,6 +78,59 @@ public class Main {
         } while (isContinue);
     }
 
+    // FUNCTION - 2
+    public static void updateCustomer(Customers customerList) {
+        boolean isContinue = true;
+
+        do {
+            System.out.println("\n=== UPDATE CUSTOMER INFORMATION ===");
+            String id = ndl.getString("Enter Customer Code: ");
+            Customer old = customerList.searchById(id);
+
+            if (old == null) {
+                System.out.println("This customer does not exist");
+            } else {
+                System.out.println("Current information");
+                System.out.println(old);
+
+                String name = ndl.getString("New name [Enter keep old]");
+                if (name != null && !name.isEmpty()) {
+                    if (Acceptable.isValid(name, Acceptable.NAME_VALID)) {
+                        old.setName(name);
+                    } else {
+                        System.out.println("Invalid name format! Keeping old value.");
+                    }
+                }
+
+                String phone = ndl.getString("New phone [Enter to keep old]: ");
+                if (phone != null && !phone.isEmpty()) {
+                    if (Acceptable.isValid(phone, Acceptable.VN_TELCO_VALID)) {
+                        old.setPhone(phone);
+                    } else {
+                        System.out.println("Invalid phone format ! Keeping old value.");
+                    }
+                }
+
+                String email = ndl.getString("New email [Enter to keep old]: ");
+                if (email!=null && !email.isEmpty()) {
+                    if (Acceptable.isValid(email, Acceptable.EMAIL_VALID)) {
+                        old.setEmail(email);
+                    } else {
+                        System.out.println("Invalid email format ! Keeping old value.");
+                    }
+                }
+                
+                customerList.update(old);
+                System.out.println("\nUpdate successful");
+                System.out.println(old);
+            }
+            
+            String choice = ndl.getString("\nContinue updating another customer? (Y/N): ");
+            isContinue = choice.equalsIgnoreCase("Y");
+            
+        } while (isContinue);
+    }
+
     // FUNCTION - 8 
     private static void displayLists(Customers customerList) {
         System.out.println("\n--- DISPLAY LISTS ---");
@@ -114,7 +167,7 @@ public class Main {
                     break;
                 case 2:
                     // TODO: Function 2 - Update customer information
-                    System.out.println("Feature 2 is not implemented yet.");
+                    updateCustomer(customerList);
                     break;
                 case 3:
                     // TODO: Function 3 - Search for customer information by name

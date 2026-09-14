@@ -5,6 +5,7 @@
 package tools;
 
 import java.util.Scanner;
+import java.util.function.Consumer;
 import model.Customer;
 
 /**
@@ -79,48 +80,31 @@ public class Inputter {
         return inputAndLoop(mess, pattern, true);
     }
 
+    private void inputField(String prompt, String pattern, boolean isUpdate, Consumer<String> setter) {
+        if (!isUpdate) {
+            setter.accept(inputAndLoop(prompt, pattern));
+            return;
+        }
+        String value = getString(prompt);
+        if (value.trim().isEmpty()) {
+            return; // giu gia tri cu
+        }
+        if (Acceptable.isValid(value, pattern)) {
+            setter.accept(value);
+        } else {
+            System.out.println("Invalid format ! Keeping old value.");
+        }
+    }
+
     public void inputCustomerInfo(Customer c, boolean isUpdate) {
-        // ------ Name ------
-        String name = isUpdate
-                ? getString("New name [Enter to keep old]: ")
-                : inputAndLoop("Customer name [2-25 chars]: ", Acceptable.NAME_VALID);
-        if (!isUpdate) {
-            c.setName(name);
-        } else if (!name.trim().isEmpty()) {
-            if (Acceptable.isValid(name, Acceptable.NAME_VALID)) {
-                c.setName(name);
-            } else {
-                System.out.println("Invalid name format ! Keeping old value.");
-            }
-        }
+        inputField(isUpdate ? "New name [Enter to keep old]: " : "Customer name [2-25 chars]: ",
+                Acceptable.NAME_VALID, isUpdate, c::setName);
 
-        // ------ Phone ------
-        String phone = isUpdate
-                ? getString("New phone [Enter to keep old]: ")
-                : inputAndLoop("Phone number [10 digits, VN operator]: ", Acceptable.VN_TELCO_VALID);
-        if (!isUpdate) {
-            c.setPhone(phone);
-        } else if (!phone.trim().isEmpty()) {
-            if (Acceptable.isValid(phone, Acceptable.VN_TELCO_VALID)) {
-                c.setPhone(phone);
-            } else {
-                System.out.println("Invalid phone format ! Keeping old value.");
-            }
-        }
+        inputField(isUpdate ? "New phone [Enter to keep old]: " : "Phone number [10 digits, VN operator]: ",
+                Acceptable.VN_TELCO_VALID, isUpdate, c::setPhone);
 
-        // ------ Email ------
-        String email = isUpdate
-                ? getString("New email [Enter to keep old]: ")
-                : inputAndLoop("Email address: ", Acceptable.EMAIL_VALID);
-        if (!isUpdate) {
-            c.setEmail(email);
-        } else if (!email.trim().isEmpty()) {
-            if (Acceptable.isValid(email, Acceptable.EMAIL_VALID)) {
-                c.setEmail(email);
-            } else {
-                System.out.println("Invalid email format ! Keeping old value.");
-            }
-        }
+        inputField(isUpdate ? "New email [Enter to keep old]: " : "Email address: ",
+                Acceptable.EMAIL_VALID, isUpdate, c::setEmail);
     }
 
 }

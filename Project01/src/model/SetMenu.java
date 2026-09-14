@@ -4,6 +4,8 @@
  */
 package model;
 
+import java.util.Objects;
+
 /**
  *
  * @author Le Nhat Tung
@@ -58,6 +60,31 @@ public class SetMenu {
     @Override
     public String toString() {
         return "SetMenu{" + "menuId=" + menuId + ", menuName=" + menuName + ", price=" + price + ", ingredients=" + ingredients + '}';
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.menuId);
+        hash = 97 * hash + Objects.hashCode(this.menuName);
+        hash = 97 * hash + (int) (Double.doubleToLongBits(this.price) ^ (Double.doubleToLongBits(this.price) >>> 32));
+        hash = 97 * hash + Objects.hashCode(this.ingredients);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SetMenu other = (SetMenu) obj;
+        return Objects.equals(this.menuId, other.menuId);
     }
     
     

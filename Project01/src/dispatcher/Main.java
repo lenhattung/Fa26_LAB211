@@ -5,6 +5,7 @@
 package dispatcher;
 
 import business.Customers;
+import business.SetMenus;
 import java.util.List;
 import model.Customer;
 import tools.Acceptable;
@@ -19,6 +20,7 @@ public class Main {
     private static Inputter ndl = new Inputter();
     // Danh sach du lieu dung chung cho toan bo chuong trinh
     private static Customers customerList = new Customers();
+    private static SetMenus menuList = new SetMenus();
 
     /**
      * In ra menu chinh cua chuong trinh
@@ -118,6 +120,12 @@ public class Main {
         }
     }
     
+    // FUNCTION - 4
+    public static void displayFeastMenus(SetMenus menuList){
+        menuList.readFromFile();
+        menuList.showMenuList();
+    }
+    
     // FUNCTION - 8 
     private static void displayLists(Customers customerList) {
         System.out.println("\n--- DISPLAY LISTS ---");
@@ -162,7 +170,7 @@ public class Main {
                     break;
                 case 4:
                     // TODO: Function 4 - Display feast menus
-                    System.out.println("Feature 4 is not implemented yet.");
+                    displayFeastMenus(menuList);
                     break;
                 case 5:
                     // TODO: Function 5 - Place a feast order

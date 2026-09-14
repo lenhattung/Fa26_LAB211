@@ -55,17 +55,12 @@ public class Main {
                 }
             } while (customerList.isExist(id));
 
-            // --- Nhap va kiem tra ten (2-25 ky tu, khong rong) ---
-            String name = ndl.inputAndLoop("Customer name [2-25 chars]: ", Acceptable.NAME_VALID);
+            Customer newCustomer = new Customer();
+            newCustomer.setId(id);
 
-            // --- Nhap va kiem tra so dien thoai (10 so, thuoc nha mang VN) ---
-            String phone = ndl.inputAndLoop("Phone number [10 digits, VN operator]: ", Acceptable.VN_TELCO_VALID);
+            // Name/Phone/Email nhap qua Inputter - dung chung code voi Function 2
+            ndl.inputCustomerInfo(newCustomer, false);
 
-            // --- Nhap va kiem tra email (dung dinh dang chuan) ---
-            String email = ndl.inputAndLoop("Email address: ", Acceptable.EMAIL_VALID);
-
-            // --- 3. Luu ban ghi khi tat ca du lieu da hop le ---
-            Customer newCustomer = new Customer(id, name, phone, email);
             customerList.addNew(newCustomer);
 
             System.out.println("\nRegistration successful !");
@@ -93,41 +88,17 @@ public class Main {
                 System.out.println("Current information");
                 System.out.println(old);
 
-                String name = ndl.getString("New name [Enter keep old]");
-                if (name != null && !name.isEmpty()) {
-                    if (Acceptable.isValid(name, Acceptable.NAME_VALID)) {
-                        old.setName(name);
-                    } else {
-                        System.out.println("Invalid name format! Keeping old value.");
-                    }
-                }
+                // Name/Phone/Email cap nhat qua Inputter - dung chung code voi Function 1
+                ndl.inputCustomerInfo(old, true);
 
-                String phone = ndl.getString("New phone [Enter to keep old]: ");
-                if (phone != null && !phone.isEmpty()) {
-                    if (Acceptable.isValid(phone, Acceptable.VN_TELCO_VALID)) {
-                        old.setPhone(phone);
-                    } else {
-                        System.out.println("Invalid phone format ! Keeping old value.");
-                    }
-                }
-
-                String email = ndl.getString("New email [Enter to keep old]: ");
-                if (email!=null && !email.isEmpty()) {
-                    if (Acceptable.isValid(email, Acceptable.EMAIL_VALID)) {
-                        old.setEmail(email);
-                    } else {
-                        System.out.println("Invalid email format ! Keeping old value.");
-                    }
-                }
-                
                 customerList.update(old);
                 System.out.println("\nUpdate successful");
                 System.out.println(old);
             }
-            
+
             String choice = ndl.getString("\nContinue updating another customer? (Y/N): ");
             isContinue = choice.equalsIgnoreCase("Y");
-            
+
         } while (isContinue);
     }
 

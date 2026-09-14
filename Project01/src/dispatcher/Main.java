@@ -5,6 +5,7 @@
 package dispatcher;
 
 import business.Customers;
+import java.util.List;
 import model.Customer;
 import tools.Acceptable;
 import tools.Inputter;
@@ -102,6 +103,21 @@ public class Main {
         } while (isContinue);
     }
 
+    // FUNCTION - 3
+    public static void searchCustomerByName(Customers customerList){
+        System.out.println("\n=== SEARCH CUSTOMER BY NAME ===" );
+        String keyword = ndl.getString("Enter customer name [or part of name]: ");
+        
+        List<Customer> result = customerList.filterByName(keyword);
+        
+        if(result.isEmpty()){
+            System.out.println("No one matches the search criteria!");
+        }else{
+            System.out.println("Matching Customers");
+            customerList.showAll(result);
+        }
+    }
+    
     // FUNCTION - 8 
     private static void displayLists(Customers customerList) {
         System.out.println("\n--- DISPLAY LISTS ---");
@@ -142,7 +158,7 @@ public class Main {
                     break;
                 case 3:
                     // TODO: Function 3 - Search for customer information by name
-                    System.out.println("Feature 3 is not implemented yet.");
+                    searchCustomerByName(customerList);
                     break;
                 case 4:
                     // TODO: Function 4 - Display feast menus

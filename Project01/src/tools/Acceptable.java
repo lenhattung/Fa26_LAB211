@@ -10,7 +10,7 @@ package tools;
  */
 public interface Acceptable {
 
-    String CUS_ID_VALID = "^[CcGKk]\\d{4}$";
+    String CUS_ID_VALID = "^[CcGgKk]\\d{4}$";
     String NAME_VALID = "^.{2,25}$";
     // Dau so nha mang VN pho bien (Viettel, Vina, Mobi, Vietnamobile, Gmobile)
     String VN_TELCO_VALID = "^(03[2-9]|05[6|8|9]|07[0|6-9]|08[1-9]|09[0-9])\\d{7}$";

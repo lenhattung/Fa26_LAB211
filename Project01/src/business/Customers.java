@@ -89,4 +89,15 @@ public class Customers extends ArrayList<Customer> implements Workable<Customer>
     public boolean isDuplicated(Customer x) {
         return this.contains(x);
     }
+    
+    public List<Customer> filterByName(String name){
+        List<Customer> result = new ArrayList<>();
+        
+        for(Customer c : this){
+            if(c.getName().toLowerCase().contains(name.toLowerCase())){
+                result.add(c);    
+            }
+        }
+        return result;
+    }
 }

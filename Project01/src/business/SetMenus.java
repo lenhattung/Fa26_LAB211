@@ -91,4 +91,13 @@ public class SetMenus extends ArrayList<SetMenu>{
         }
         System.out.println("---------------------------------------------------");
     }
+    
+    public SetMenu searchById(String x){
+        for (SetMenu s : this) {
+            if(s.getMenuId().equalsIgnoreCase(x)){
+                return s;
+            }
+        }
+        return null;
+    }
 }

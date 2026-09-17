@@ -5,9 +5,14 @@
 package dispatcher;
 
 import business.Customers;
+import business.Orders;
 import business.SetMenus;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import model.Customer;
+import model.Order;
+import model.SetMenu;
 import tools.Acceptable;
 import tools.Inputter;
 
@@ -21,6 +26,7 @@ public class Main {
     // Danh sach du lieu dung chung cho toan bo chuong trinh
     private static Customers customerList = new Customers();
     private static SetMenus menuList = new SetMenus();
+    private static Orders orderList = new Orders();
 
     /**
      * In ra menu chinh cua chuong trinh
@@ -106,26 +112,103 @@ public class Main {
     }
 
     // FUNCTION - 3
-    public static void searchCustomerByName(Customers customerList){
-        System.out.println("\n=== SEARCH CUSTOMER BY NAME ===" );
+    public static void searchCustomerByName(Customers customerList) {
+        System.out.println("\n=== SEARCH CUSTOMER BY NAME ===");
         String keyword = ndl.getString("Enter customer name [or part of name]: ");
-        
+
         List<Customer> result = customerList.filterByName(keyword);
-        
-        if(result.isEmpty()){
+
+        if (result.isEmpty()) {
             System.out.println("No one matches the search criteria!");
-        }else{
+        } else {
             System.out.println("Matching Customers");
             customerList.showAll(result);
         }
     }
-    
+
     // FUNCTION - 4
-    public static void displayFeastMenus(SetMenus menuList){
+    public static void displayFeastMenus(SetMenus menuList) {
         menuList.readFromFile();
         menuList.showMenuList();
     }
-    
+
+    private static void printOrderReceipt(Order o, Customer c, SetMenu m, double totalCost) {
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        System.out.println("----------------------------------------------------------------");
+        System.out.println("Customer order information [Order ID: " + o.getOrderCode() + "]");
+        System.out.println("----------------------------------------------------------------");
+        System.out.println("Code           : " + c.getId());
+        System.out.println("Customer name  : " + c.getName());
+        System.out.println("Phone number   : " + c.getPhone());
+        System.out.println("Email          : " + c.getEmail());
+        System.out.println("----------------------------------------------------------------");
+        System.out.println("Code of Set Menu: " + m.getMenuId());
+        System.out.println("Set menu name  : " + m.getMenuName());
+        System.out.println("Event date     : " + df.format(o.getEventDate()));
+        System.out.println("Number of tables: " + o.getNumOfTables());
+        System.out.println("Price          : " + String.format("%,.0f", m.getPrice()) + " Vnd");
+        System.out.println("Ingredients:");
+        System.out.println(m.getIngredients());
+        System.out.println("----------------------------------------------------------------");
+        System.out.println("Total cost     : " + String.format("%,.0f", totalCost) + " Vnd");
+        System.out.println("----------------------------------------------------------------");
+    }
+
+    // FUNCTION - 5
+    public static void placeFeastOrder(Customers customerList, SetMenus menuList, Orders orderList) {
+        boolean isContinue = true;
+        do {
+            System.out.println("\n=== PLACE A FEAST ORDER ===");
+
+            Order newOrder = new Order();
+            ndl.inputOrderInfo(newOrder, customerList, menuList, orderList, false);
+            if (orderList.isDuplicate(newOrder)) {
+                System.out.println("Dupplicate data !");
+            } else {
+                newOrder.setOrderCode((orderList.size() + 1) + "");
+                Customer customer = customerList.searchById(newOrder.getCustomerId());
+                SetMenu menu = menuList.searchById(newOrder.getMenuId());
+                double totalCost = menu.getPrice() * newOrder.getNumOfTables();
+                printOrderReceipt(newOrder, customer, menu, totalCost);
+            }
+
+            String choice = ndl.getString("\nContinue placing another order? (Y/N): ");
+            isContinue = choice.equalsIgnoreCase("Y");
+        } while (isContinue);
+    }
+
+    // FUNCTION - 6
+    public static void updateOrder(Orders orderList, Customers customerList, SetMenus menuList) {
+        boolean isContinue = true;
+
+        do {
+            System.out.println("\n=== UPDATE ORDER INFORMATION ===");
+            String orderId = ndl.getString("Enter Order ID: ");
+            Order old = orderList.searchById(orderId);
+
+            if (old == null) {
+                System.out.println("This Order does not exist.");
+            } else {
+                if (old.getEventDate().before(new Date())) {
+                    System.out.println("Cannot update an order whose event date has already passed.");
+                } else {
+                    System.out.println("Current information:");
+                    System.out.println(old);
+
+                    ndl.inputOrderInfo(old, customerList, menuList, orderList, true); // chi hoi Tables/Date
+
+                    orderList.update(old);
+                    System.out.println("\nUpdate successful !");
+                    System.out.println(old);
+                }
+            }
+
+            String choice = ndl.getString("\nContinue updating another order? (Y/N): ");
+            isContinue = choice.equalsIgnoreCase("Y");
+
+        } while (isContinue);
+    }
+
     // FUNCTION - 8 
     private static void displayLists(Customers customerList) {
         System.out.println("\n--- DISPLAY LISTS ---");
@@ -174,10 +257,10 @@ public class Main {
                     break;
                 case 5:
                     // TODO: Function 5 - Place a feast order
-                    System.out.println("Feature 5 is not implemented yet.");
+                    placeFeastOrder(customerList, menuList, orderList);
                     break;
                 case 6:
-                    // TODO: Function 6 - Update order information
+                    updateOrder(orderList, customerList, menuList);
                     System.out.println("Feature 6 is not implemented yet.");
                     break;
                 case 7:

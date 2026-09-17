@@ -4,13 +4,16 @@
  */
 package model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  *
  * @author Le Nhat Tung
  */
 public class Order {
+
     private String orderCode, customerId, province, menuId;
     private int numOfTables;
     private Date eventDate;
@@ -76,9 +79,42 @@ public class Order {
     }
 
     @Override
-    public String toString() {
-        return "Order{" + "orderCode=" + orderCode + ", customerId=" + customerId + ", province=" + province + ", menuId=" + menuId + ", numOfTables=" + numOfTables + ", eventDate=" + eventDate + '}';
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + Objects.hashCode(this.orderCode);
+        hash = 79 * hash + Objects.hashCode(this.customerId);
+        hash = 79 * hash + Objects.hashCode(this.province);
+        hash = 79 * hash + Objects.hashCode(this.menuId);
+        hash = 79 * hash + this.numOfTables;
+        hash = 79 * hash + Objects.hashCode(this.eventDate);
+        return hash;
     }
-    
-    
- }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Order other = (Order) obj;
+        if (!Objects.equals(this.customerId, other.customerId)) {
+            return false;
+        }
+        if (!Objects.equals(this.menuId, other.menuId)) {
+            return false;
+        }
+        return Objects.equals(this.eventDate, other.eventDate);
+    }
+
+    @Override
+    public String toString() {
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        return String.format("%-14s| %-11s| %-6s| %-6s| %d",
+                orderCode, df.format(eventDate), customerId, menuId, numOfTables);
+    }
+}

@@ -4,18 +4,31 @@
  */
 package business;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import model.Order;
+import model.SetMenu;
+import tools.FileUtils;
 
 /**
  *
  * @author Le Nhat Tung
  */
 public class Orders extends HashSet<Order> implements Workable<Order> {
+
+    private final String pathFile = "feast_order_service.dat";
+    private boolean saved = true;
+    private static final String LINE
+            = "-------------------------------------------------------------------------------";
+
+    public Orders() {
+        readFromFile();
+    }
 
     /**
      * Kiem tra don hang co bi trung hay khong, dua vao equals() da dinh nghia
@@ -30,6 +43,7 @@ public class Orders extends HashSet<Order> implements Workable<Order> {
     public void addNew(Order x) {
         if (!this.isDuplicate(x)) {
             this.add(x);
+            this.saved = false;
         }
     }
 
@@ -37,9 +51,12 @@ public class Orders extends HashSet<Order> implements Workable<Order> {
     public void update(Order x) {
         Order old = searchById(x.getOrderCode());
         if (old != null) {
+            this.remove(old);
             old.setMenuId(x.getMenuId());
             old.setNumOfTables(x.getNumOfTables());
             old.setEventDate(x.getEventDate());
+            this.add(old);
+            this.saved = false;
         }
     }
 
@@ -67,4 +84,47 @@ public class Orders extends HashSet<Order> implements Workable<Order> {
         }
     }
 
+    private static String money(double v) {
+        return String.format(Locale.US, "%,.0f", v);   // Locale.US để luôn ra dấu phẩy như đề mẫu
+    }
+
+    /**
+     * Overload cho Function 8: cần SetMenus để tra giá -> tính Cost
+     */
+    public void showAll(SetMenus menus) {
+        if (this.isEmpty()) {
+            System.out.println("No data in the system.");
+            return;
+        }
+        List<Order> sorted = new ArrayList<>(this);
+        sorted.sort(Comparator.comparing(Order::getEventDate));   // tăng dần theo ngày
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        String fmt = "%-6s| %-11s| %-11s| %-9s| %10s| %6s| %14s%n";
+
+        System.out.println(LINE);
+        System.out.printf(fmt, "ID", "Event date", "Customer ID", "Set Menu", "Price", "Tables", "Cost");
+        System.out.println(LINE);
+        for (Order o : sorted) {
+            SetMenu m = menus.searchById(o.getMenuId());
+            double price = (m == null) ? 0 : m.getPrice();
+            System.out.printf(fmt, o.getOrderCode(), df.format(o.getEventDate()),
+                    o.getCustomerId(), o.getMenuId(), money(price),
+                    o.getNumOfTables(), money(price * o.getNumOfTables()));
+        }
+        System.out.println(LINE);
+    }
+
+    public void readFromFile() {
+        this.clear();
+        List<Order> list = FileUtils.readFromFile(pathFile);
+        for (Order order : list) {
+            this.add(order);
+        }
+        this.saved = true;
+    }
+
+    public void saveToFile() {
+        FileUtils.saveToFile(new ArrayList<>(this), pathFile);
+        this.saved = true;
+    }
 }

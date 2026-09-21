@@ -24,6 +24,7 @@ public class SetMenus extends ArrayList<SetMenu>{
         super();
         this.pathFile="feastMenu.csv";
         this.fileFound = false;
+        this.readFromFile();
     }
     
      /**

@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import model.Customer;
+import tools.FileUtils;
 
 /**
  *
@@ -25,6 +26,17 @@ public class Customers extends ArrayList<Customer> implements Workable<Customer>
     private static final String TABLE_FOOTER
             = "------------------------------------------------------------------";
 
+    private final String pathFile = "customers.dat";
+    private boolean saved = true;
+    
+    public boolean isSaved(){
+        return saved;
+    }
+
+    public Customers() {
+        this.readFromFile();
+    }
+    
     // ================== Function 1: Register customers ==================
     /**
      * Them moi 1 khach hang vao danh sach. Luu y: viec kiem tra "id da ton tai
@@ -36,6 +48,7 @@ public class Customers extends ArrayList<Customer> implements Workable<Customer>
     public void addNew(Customer x) {
         if (!this.isDuplicated(x)) {
             this.add(x);
+            this.saved = false;
         }
     }
 
@@ -46,6 +59,7 @@ public class Customers extends ArrayList<Customer> implements Workable<Customer>
             old.setName(x.getName());
             old.setPhone(x.getPhone());
             old.setEmail(x.getEmail());
+            this.saved = false;
         }
     }
 
@@ -99,5 +113,16 @@ public class Customers extends ArrayList<Customer> implements Workable<Customer>
             }
         }
         return result;
+    }
+    
+    public void readFromFile(){
+        this.clear();
+        this.addAll(FileUtils.<Customer>readFromFile(pathFile));
+        this.saved = true;
+    }
+    
+    public void saveToFile(){
+        FileUtils.saveToFile(this, pathFile);
+        this.saved = true;
     }
 }

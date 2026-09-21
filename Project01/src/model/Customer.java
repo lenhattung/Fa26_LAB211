@@ -4,13 +4,16 @@
  */
 package model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  *
  * @author Le Nhat Tung
  */
-public class Customer {
+public class Customer implements Serializable{
+    private static final long serialVersionUID = 1L;
+    
     private String id, name, phone, email;
 
     public Customer() {

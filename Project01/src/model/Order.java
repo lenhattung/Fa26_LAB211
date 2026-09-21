@@ -4,6 +4,7 @@
  */
 package model;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
@@ -12,7 +13,9 @@ import java.util.Objects;
  *
  * @author Le Nhat Tung
  */
-public class Order {
+public class Order implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String orderCode, customerId, province, menuId;
     private int numOfTables;
@@ -81,12 +84,9 @@ public class Order {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 79 * hash + Objects.hashCode(this.orderCode);
-        hash = 79 * hash + Objects.hashCode(this.customerId);
-        hash = 79 * hash + Objects.hashCode(this.province);
-        hash = 79 * hash + Objects.hashCode(this.menuId);
-        hash = 79 * hash + this.numOfTables;
-        hash = 79 * hash + Objects.hashCode(this.eventDate);
+        hash = 47 * hash + Objects.hashCode(this.customerId);
+        hash = 47 * hash + Objects.hashCode(this.menuId);
+        hash = 47 * hash + Objects.hashCode(this.eventDate);
         return hash;
     }
 

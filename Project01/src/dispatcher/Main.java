@@ -128,7 +128,6 @@ public class Main {
 
     // FUNCTION - 4
     public static void displayFeastMenus(SetMenus menuList) {
-        menuList.readFromFile();
         menuList.showMenuList();
     }
 
@@ -166,6 +165,7 @@ public class Main {
                 System.out.println("Dupplicate data !");
             } else {
                 newOrder.setOrderCode((orderList.size() + 1) + "");
+                orderList.add(newOrder);
                 Customer customer = customerList.searchById(newOrder.getCustomerId());
                 SetMenu menu = menuList.searchById(newOrder.getMenuId());
                 double totalCost = menu.getPrice() * newOrder.getNumOfTables();
@@ -209,6 +209,14 @@ public class Main {
         } while (isContinue);
     }
 
+    // FUNCTION - 7
+    public static void saveData() {
+        customerList.saveToFile();
+        System.out.println("Customer data has been successfully saved to \"customers.dat\".");
+        orderList.saveToFile();
+        System.out.println("Order data has been successfully saved to \"feast_order_service.dat\".");
+    }
+
     // FUNCTION - 8 
     private static void displayLists(Customers customerList) {
         System.out.println("\n--- DISPLAY LISTS ---");
@@ -222,8 +230,7 @@ public class Main {
                 customerList.showAll();
                 break;
             case 2:
-                // TODO: Orders class chua duoc xay dung - se bo sung sau
-                System.out.println("Order list feature is not implemented yet.");
+                orderList.showAll(menuList);  // rỗng -> "No data in the system."
                 break;
             default:
                 System.out.println("Invalid choice !");
@@ -264,7 +271,7 @@ public class Main {
                     System.out.println("Feature 6 is not implemented yet.");
                     break;
                 case 7:
-                    // Function 7 - Save data to file
+                    saveData();
                     break;
                 case 8:
                     displayLists(customerList);
